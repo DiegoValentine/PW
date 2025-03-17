@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <body>
+        <li class="first" id="color"><a href="index.php">Home</a></li> 
+ <li id="color1" ><a href="index.php?content=test">test</a></li>
+    <button id="b1">Clique em mim!</button>
+    <script>
+        document.getElementById("b1").addEventListener("click", function() {
+            alert("Você clicou no botão!");
+        });
+
+        window.addEventListener("load", function() {
+            alert("Bem-vindo!");
+        });
+
+        window.onbeforeunload = function () {
+    return "Não vá embora, inscreva-se...";
+        };
+        var div = document.getElementById( 'color' );
+        div.onmouseover = function() { 
+        this.style.backgroundColor = 'red';
+        }
+        var div = document.getElementById( 'color1' );
+        div.onmouseover = function() { 
+        this.style.backgroundColor = 'red';
+        }
+        function MouseOver(elem) {
+        document.getElementsByName(elem).style.color("white");
+        }
+
+        function MouseOut(elem) {
+        document.getElementsByName(elem).style.color("black");
+        }
+
+        <nav id="frame-link">
+        <a href="index.html" name="home" onmouseover="MouseOver(this);" onmouseout="MouseOut(this);">Home</a>
+        </nav>
+    </script>
+</body>
+</html>
