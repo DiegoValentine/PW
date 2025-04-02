@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Alunos</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            background-color: blueviolet;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #000000;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: green;
+        }
+        .concluida {
+            text-decoration: line-through;
+            color: gray;
+        }
+        input, button {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Lista de Alunos</h2>
+    <input type="number" id="numeroChamadaInput" placeholder="Número da Chamada">
+    <input type="text" id="alunoInput" placeholder="Digite um nome">
+    <button onclick="adicionarAluno()">Adicionar</button>
+    <button onclick="limparAlunos()">Limpar Tudo</button>
+    <ul id="listaAlunos"></ul>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", carregarAlunos);
+
+        function adicionarAluno() {
+            let numeroChamada = document.getElementById("numeroChamadaInput").value.trim();
+            let nomeAluno = document.getElementById("alunoInput").value.trim();
+
+            if (numeroChamada === "" || nomeAluno === "") return;
+
+            let alunos = JSON.parse(localStorage.getItem("alunos")) || [];
+            alunos.push({ numeroChamada: parseInt(numeroChamada), nomeAluno: nomeAluno, concluida: false });
+
+            alunos.sort((a, b) => {
+                if (a.numeroChamada !== b.numeroChamada) {
+                    return a.numeroChamada - b.numeroChamada;
+                } else {
+                    return a.nomeAluno.localeCompare(b.nomeAluno);
+                }
+            });
+
+            localStorage.setItem("alunos", JSON.stringify(alunos));
+
+           
+            document.getElementById("numeroChamadaInput").value = "";
+            document.getElementById("alunoInput").value = "";
+
+            renderizarAlunos();
+        }
+
+        function carregarAlunos() {
+            renderizarAlunos();
+        }
+
+        function renderizarAlunos() {
+            let lista = document.getElementById("listaAlunos");
+            lista.innerHTML = "";
+
+            let alunos = JSON.parse(localStorage.getItem("alunos")) || [];
+
+            alunos.forEach((aluno, index) => {
+                let li = document.createElement("li");
+                li.textContent = `${aluno.numeroChamada} - ${aluno.nomeAluno}`;
+                
+                if (aluno.concluida) li.classList.add("concluida");
+
+                li.onclick = function () {
+                    aluno.concluida = !aluno.concluida;
+                    let alunosAtualizados = JSON.parse(localStorage.getItem("alunos"));
+                    alunosAtualizados[index].concluida = aluno.concluida;
+                    localStorage.setItem("alunos", JSON.stringify(alunosAtualizados));
+                    renderizarAlunos();
+                };
+
+                let btnRemover = document.createElement("button");
+                btnRemover.textContent = "X";
+                btnRemover.onclick = function (event) {
+                    event.stopPropagation();
+                    alunos.splice(index, 1);
+                    localStorage.setItem("alunos", JSON.stringify(alunos));
+                    renderizarAlunos();
+                };
+
+                btnRemover.style.marginLeft = "10px";
+                li.appendChild(btnRemover);
+                lista.appendChild(li);
+            });
+        }
+
+        function limparAlunos() {
+            localStorage.removeItem("alunos");
+            renderizarAlunos();
+        }
+    </script>
+</body>
+</html>
